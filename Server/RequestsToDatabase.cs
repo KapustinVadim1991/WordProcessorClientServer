@@ -14,7 +14,7 @@ namespace WordProcessor
         /// <summary>
         /// Выборка наиболее часто встречающихся пяти слов из словаря, начало которых соответствует префиксу.
         /// </summary>
-        public static void FindTopFive(string prefix)
+        public static string FindTopFive(string prefix)
         {
             try
             {
@@ -23,7 +23,7 @@ namespace WordProcessor
                     if (!context.Database.Exists())
                     {
                         Console.WriteLine("Словаря не существует, воспользуйтесь командой [создание словаря]\n");
-                        return;
+                        return "";
                     }
 
                     var result = context.Words.Where(x => x.Text.StartsWith(prefix))
@@ -32,17 +32,21 @@ namespace WordProcessor
                                               .Take(5)
                                               .ToList();
 
+                    var topFive = new StringBuilder("post ");
+
                     foreach(Word word in result)
                     {
-                        Console.WriteLine(word.Text);
+                        topFive.Append(word.Text + " ");
                     }
-                    Console.WriteLine();
+                    return topFive.ToString();
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine($"\nПри подключении к словарю возникла непредвиденная ошибка:\n{e.Message} {e.StackTrace}");
+                return "";
             }
+
         }
 
         /// <summary>

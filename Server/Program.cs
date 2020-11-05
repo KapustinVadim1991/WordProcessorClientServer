@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using WordProcessor.DataModel;
 using System.Configuration;
 using System.IO;
+using WordProcessor.Network;
+using System.Threading;
 
 namespace WordProcessor
 {
@@ -21,8 +23,10 @@ namespace WordProcessor
         static void Main(string[] args)
         {
             AppDomain.CurrentDomain.SetData("DataDirectory", Environment.CurrentDirectory);
-            SetConnectionString();
+            //SetConnectionString();
             SetPort();
+
+            Task.Run(()=>AsynchronousSocketListener.StartListening(portNumber));
 
 
             Console.WriteLine(firstMessage);
@@ -55,7 +59,6 @@ namespace WordProcessor
         {
             return input.Substring(command.Length).Trim(new char[] { ' ', '\"'});
         }
-
 
         public static void SetConnectionString()
         {

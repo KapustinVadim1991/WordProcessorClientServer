@@ -71,9 +71,11 @@
     <Compile Include="ConsoleExtension.cs" />
     <Compile Include="DataModel\DictionaryContext.cs" />
     <Compile Include="DataModel\Word.cs" />
+    <Compile Include="Network\StateObject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestsToDatabase.cs" />
+    <Compile Include="Network\AsynchronousSocketListener.cs" />
     <Compile Include="TextProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
