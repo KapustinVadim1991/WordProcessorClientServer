@@ -1,0 +1,12 @@
+C:\Users\Vadim\Desktop\WordProcessor\bin\Release\WordProcessor.exe.config
+C:\Users\Vadim\Desktop\WordProcessor\bin\Release\WordProcessor.exe
+C:\Users\Vadim\Desktop\WordProcessor\bin\Release\WordProcessor.pdb
+C:\Users\Vadim\Desktop\WordProcessor\bin\Release\EntityFramework.dll
+C:\Users\Vadim\Desktop\WordProcessor\bin\Release\EntityFramework.SqlServer.dll
+C:\Users\Vadim\Desktop\WordProcessor\bin\Release\EntityFramework.xml
+C:\Users\Vadim\Desktop\WordProcessor\bin\Release\EntityFramework.SqlServer.xml
+C:\Users\Vadim\Desktop\WordProcessor\bin\Release\ru\EntityFramework.resources.dll
+C:\Users\Vadim\Desktop\WordProcessor\obj\Release\WordProcessor.csprojAssemblyReference.cache
+C:\Users\Vadim\Desktop\WordProcessor\obj\Release\WordProcessor.csproj.CopyComplete
+C:\Users\Vadim\Desktop\WordProcessor\obj\Release\WordProcessor.exe
+C:\Users\Vadim\Desktop\WordProcessor\obj\Release\WordProcessor.pdb
