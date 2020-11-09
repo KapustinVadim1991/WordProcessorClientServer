@@ -10,3 +10,15 @@ C:\Users\Vadim\Desktop\WordProcessor\obj\Release\WordProcessor.csprojAssemblyRef
 C:\Users\Vadim\Desktop\WordProcessor\obj\Release\WordProcessor.csproj.CopyComplete
 C:\Users\Vadim\Desktop\WordProcessor\obj\Release\WordProcessor.exe
 C:\Users\Vadim\Desktop\WordProcessor\obj\Release\WordProcessor.pdb
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Server\bin\Release\WordProcessor.exe.config
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Server\bin\Release\WordProcessor.exe
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Server\bin\Release\WordProcessor.pdb
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Server\bin\Release\EntityFramework.dll
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Server\bin\Release\EntityFramework.SqlServer.dll
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Server\bin\Release\EntityFramework.xml
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Server\bin\Release\EntityFramework.SqlServer.xml
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Server\bin\Release\ru\EntityFramework.resources.dll
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Server\obj\Release\WordProcessor.csprojAssemblyReference.cache
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Server\obj\Release\WordProcessor.csproj.CopyComplete
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Server\obj\Release\WordProcessor.exe
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Server\obj\Release\WordProcessor.pdb

@@ -1,0 +1,5 @@
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Client\bin\Release\Client.exe.config
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Client\bin\Release\Client.exe
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Client\bin\Release\Client.pdb
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Client\obj\Release\Client.exe
+C:\Users\Vadim\Desktop\WordProcessorClientServer\Client\obj\Release\Client.pdb

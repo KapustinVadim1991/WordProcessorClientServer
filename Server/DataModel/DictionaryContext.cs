@@ -1,9 +1,6 @@
-﻿namespace WordProcessor.DataModel
+﻿namespace WordProcessorServer.DataModel
 {
-    using System;
     using System.Data.Entity;
-    using System.Linq;
-    using System.Configuration;
 
     class DictionaryContext : DbContext
     {

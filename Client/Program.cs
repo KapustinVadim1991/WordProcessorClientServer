@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using System.Net.NetworkInformation;
 
 namespace Client
 {
@@ -15,100 +13,59 @@ namespace Client
             IPAddress ipAddress = GetIPAddress();
             int port = GetPort();
 
-            byte[] bytes = new byte[1024];
+            Console.WriteLine("Команда для получения наиболее часто встречающихся слов get <prefix>");
 
-            try
+            while (true)
             {
-                IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-                Socket sender = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                var input = ConsoleExtension.CancelableReadLine();
+                var prefix = GetPrefix(input);
+                var words = RequestToServer.GetTopFiveWords(ipAddress, port, prefix);
 
-                // Connect the socket to the remote endpoint. Catch any errors.  
-                try
+                if(words.Count > 0)
                 {
-                    sender.Connect(remoteEP);
-
-                    Console.WriteLine("Socket connected to {0}",
-                        sender.RemoteEndPoint.ToString());
-
-                    // Encode the data string into a byte array.  
-                    byte[] msg = Encoding.UTF8.GetBytes(Console.ReadLine());
-
-                    // Send the data through the socket.  
-                    int bytesSent = sender.Send(msg);
-
-                    // Receive the response from the remote device.  
-                    int bytesRec = sender.Receive(bytes);
-                    Console.WriteLine("Echoed test = {0}",
-                        Encoding.UTF8.GetString(bytes, 0, bytesRec));
-
-                    sender.Shutdown(SocketShutdown.Both);
-                    sender.Close();
-
+                    foreach (string word in words)
+                        Console.WriteLine(word);
                 }
-                catch (ArgumentNullException ane)
-                {
-                    Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
-                }
-                catch (SocketException se)
-                {
-                    Console.WriteLine("SocketException : {0}", se.ToString());
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Unexpected exception : {0}", e.ToString());
-                }
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
+            }            
         }
 
+
+        /// <summary>
+        /// Возвращает IP адрес из введенной пользователем строки
+        /// </summary>
         private static IPAddress GetIPAddress()
         {
             while (true)
             {
-                Console.Write("Введите ip адрес или hostname сервера: ");
-                var input = Console.ReadLine();
-
-                if(IPAddress.TryParse(input, out IPAddress ipAddress))
-                {
-                    return ipAddress;
-                }
-
+                Console.Write("Введите ip адрес или hostname сервера:\n");
+                var input = ConsoleExtension.CancelableReadLine();
+                Console.WriteLine("Выполняется проверка доступности хоста...");
                 try
                 {
-                    if (Dns.GetHostEntry(input) != null)
+                    foreach (var ip in Dns.GetHostEntry(input).AddressList)
                     {
-                        foreach (var ip in Dns.GetHostEntry(input).AddressList)
-                        {
-                            if (ip.AddressFamily == AddressFamily.InterNetwork)
-                            {
-                                return ip;
-                            }
+                        if (ip.AddressFamily == AddressFamily.InterNetwork && IsHostAvailable(ip))
+                        {   
+                            return ip;
                         }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Некорректно указан ip адрес сервера!");
-                    }
+                    }                    
                 }
                 catch(SocketException e)
                 {
-                    Console.WriteLine("Хостнейм не найден");
-                }
-
-                            
+                    Console.WriteLine(e.Message);
+                }                            
             }
         }
 
+        /// <summary>
+        /// Возвращает номер порта и проверяет его корректность ввода пользователем
+        /// </summary>
         private static int GetPort()
         {
             while (true)
             {
-                Console.Write("Введите номер порта: ");
-                var input = Console.ReadLine();
+                Console.Write("Введите номер порта:\n");
+                var input = ConsoleExtension.CancelableReadLine();
 
                 if (ushort.TryParse(input, out ushort port))
                 {
@@ -119,6 +76,47 @@ namespace Client
                     Console.WriteLine("Порт указан неверно!");
                 }
             }
+        }
+
+        /// <summary>
+        /// Получение префикса из введенной пользователем строки, в случае неверного ввода команды пользователю
+        /// предлагается повторный запрос на ввод строки
+        /// </summary>
+        private static string GetPrefix(string input)
+        {
+            while (true)
+            {
+                input = input.ToLower();
+                var content = input.Split(' ');
+
+                if(content.Length == 2 && input.StartsWith("get "))
+                {
+                    return content[1];
+                }
+                else
+                {
+                    Console.WriteLine("Для отображения наиболее часто встречающихся слов, " +
+                        "должна использоваться команда get <prefix>");
+                    input = ConsoleExtension.CancelableReadLine();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Метод возвращает True, если хост доступен и False, если нет
+        /// </summary>
+        private static bool IsHostAvailable(IPAddress address)
+        {
+            Ping pingSender = new Ping();
+            PingReply reply = pingSender.Send(address);
+
+            if (reply.Status != IPStatus.Success)
+            {
+                Console.WriteLine("В данный момент хост недоступен");
+                return false;
+            }
+
+            return true;
         }
     }
 }

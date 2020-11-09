@@ -2,19 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using System.Threading.Tasks;
-using WordProcessor.DataModel;
-using System.Data.SqlClient;
+using WordProcessorServer.DataModel;
 
-namespace WordProcessor
+namespace WordProcessorServer
 {
     public static class RequestsToDatabase
     {
-
         /// <summary>
         /// Выборка наиболее часто встречающихся пяти слов из словаря, начало которых соответствует префиксу.
         /// </summary>
-        public static string FindTopFive(string prefix)
+        /// <returns>Возвращает строку из подходящих слов, разделённых пробелом</returns>
+        public static string GetTopFive(string prefix)
         {
             try
             {
@@ -22,31 +20,29 @@ namespace WordProcessor
                 {                    
                     if (!context.Database.Exists())
                     {
-                        Console.WriteLine("Словаря не существует, воспользуйтесь командой [создание словаря]\n");
-                        return "";
+                        return "Error: Словаря не существует";
                     }
-
-                    var result = context.Words.Where(x => x.Text.StartsWith(prefix))
+                    List<Word> topFive = context.Words.Where(x => x.Text.StartsWith(prefix))
                                               .OrderByDescending(x => x.Count)
                                               .ThenBy(x => x.Text)
                                               .Take(5)
                                               .ToList();
 
-                    var topFive = new StringBuilder("post ");
+                    var topFiveStr = new StringBuilder();
 
-                    foreach(Word word in result)
+                    foreach(Word word in topFive)
                     {
-                        topFive.Append(word.Text + " ");
+                        topFiveStr.Append(word.Text + " ");
                     }
-                    return topFive.ToString();
+
+                    return topFiveStr.ToString().TrimEnd();
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine($"\nПри подключении к словарю возникла непредвиденная ошибка:\n{e.Message} {e.StackTrace}");
+                Console.WriteLine($"\nПри подключении к словарю возникла непредвиденная ошибка:\n{e.Message}");
                 return "";
             }
-
         }
 
         /// <summary>
@@ -64,7 +60,8 @@ namespace WordProcessor
                         int hasRecord = context.Words.Take(1).ToList().Count;
                         if (hasRecord != 0)
                         {
-                            Console.WriteLine("Словарь уже существует и содержит слова. Вы можете обновить словарь, либо очистить существующий.\n");
+                            Console.WriteLine("Словарь уже существует и содержит слова. " +
+                                "Вы можете обновить словарь, либо очистить существующий.\n");
                             return;
                         }
                     }
@@ -80,7 +77,9 @@ namespace WordProcessor
             }
         }
 
-        // Для избежания дублирования кода, 
+        /// <summary>
+        /// Создание и заполнение словаря предоставленным списком слов
+        /// </summary>
         private static void CreateDictionary(DictionaryContext context, List<Word> words)
         {
             Console.WriteLine("Процесс создания словаря...");
@@ -146,7 +145,6 @@ namespace WordProcessor
                     }
 
                     Console.WriteLine("Процесс очистки словаря...");
-
                     context.Words.RemoveRange(context.Words);
                     context.SaveChanges();
                     Console.WriteLine("Словарь успешно очищен!");

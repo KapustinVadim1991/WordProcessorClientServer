@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using WordProcessor.DataModel;
+using WordProcessorServer.DataModel;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace WordProcessor
+namespace WordProcessorServer
 {
     class TextProcessor
     {
@@ -101,6 +100,5 @@ namespace WordProcessor
             }
             return true;            
         }
-
     }
 }

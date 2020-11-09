@@ -1,33 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using WordProcessor.DataModel;
 using System.Configuration;
 using System.IO;
-using WordProcessor.Network;
-using System.Threading;
+using WordProcessorServer.Network;
 
-namespace WordProcessor
+namespace WordProcessorServer
 {
     class Program
     {
-        static string firstMessage = "Команды приложения:\nсоздание словаря [путь к файлу]\nобновление словаря [путь к файлу]\nочистка словаря\n";
+        static string firstMessage = "Команды приложения:\n\tсоздание словаря [путь к файлу]\n\tобновление словаря [путь к файлу]\n\tочистка словаря\n";
         static string createStr = "создание словаря";
         static string updateStr = "обновление словаря";
         static string clearStr = "очистка словаря";
 
-        static ushort portNumber;
+        static int portNumber;
 
         static void Main(string[] args)
-        {
-            AppDomain.CurrentDomain.SetData("DataDirectory", Environment.CurrentDirectory);
-            //SetConnectionString();
+        {            
+            SetConnectionString();
             SetPort();
 
-            Task.Run(()=>AsynchronousSocketListener.StartListening(portNumber));
-
+            // Запускаем сервер в отдельном потоке, чтобы мы могли параллельно работать со словарем
+            Task.Run(()=>ServerListener.StartListening(portNumber));
 
             Console.WriteLine(firstMessage);
             
@@ -48,25 +43,24 @@ namespace WordProcessor
                 {
                     RequestsToDatabase.ClearDictionary();
                 }
-                else
-                {
-                    RequestsToDatabase.FindTopFive(input);
-                }
             }            
-        }
-        
-        private static string GetPath(string input, string command)
-        {
-            return input.Substring(command.Length).Trim(new char[] { ' ', '\"'});
-        }
+        }    
 
-        public static void SetConnectionString()
+        /// <summary>
+        /// Метод устанавливает в конфигурационном файле App.config строку подключения к БД
+        /// </summary>
+        private static void SetConnectionString()
         {
             while (true)
             {
-                Console.Write("Подключиться к существующей БД (введите путь) или создать новую (нажмите Enter):");
-                var input = Console.ReadLine();
-                if (input == "") break;
+                Console.WriteLine("Подключиться к существующей БД (введите путь) или создать новую (нажмите Enter)\n" +
+                    "Если БД была автоматически создана этим приложением ранее, также нажмите Enter:");
+                var input = ConsoleExtension.CancelableReadLine();
+                if (input == "")
+                {
+                    AppDomain.CurrentDomain.SetData("DataDirectory", Environment.CurrentDirectory);
+                    break;
+                }
 
                 if (!File.Exists(input))
                 {
@@ -89,14 +83,18 @@ namespace WordProcessor
             }
         }
 
-        public static void SetPort()
+        /// <summary>
+        /// Устанавливается и проверяется корректность ввода номера порта 
+        /// </summary>
+        private static void SetPort()
         {
             while (true)
             {
-                Console.Write("Введите номер порта: ");
-                var input = Console.ReadLine();
+                Console.Write("Введите номер порта:\n");
+                var input = ConsoleExtension.CancelableReadLine();
+                if (input == "" || input.All(c => char.IsWhiteSpace(c))) Environment.Exit(0);
 
-                if(ushort.TryParse(input, out ushort port))
+                if (ushort.TryParse(input, out ushort port))
                 {
                     portNumber = port;
                     break;
@@ -106,6 +104,11 @@ namespace WordProcessor
                     Console.WriteLine("Неправильно указан номер порта");
                 }
             }
+        }
+
+        private static string GetPath(string input, string command)
+        {
+            return input.Substring(command.Length).Trim(new char[] { ' ', '\"' });
         }
     }
 }
